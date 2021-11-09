@@ -1,17 +1,5 @@
 #include "AdditiveGenerator.h"
 
-std::vector<int> RandomGenerator::GetRandomSequence(const int& n)
-{
-    std::vector<int> res(n);
-
-    for (int& elem : res)
-    {
-        elem = this->GetRandomNumber();
-    }
-
-    return res;
-}
-
 AdditiveGenerator::AdditiveGenerator(const int& _power_alphabet, const std::vector<int>& _seed, const std::vector<int>& _lags)
 {
     if (_seed.size() < 2)
@@ -109,4 +97,46 @@ int CongruentGenerator::GetRandomNumber()
 int CongruentGenerator::GetPowerAlphabet()
 {
     return this->power_alphabet;
+}
+
+LSFR::LSFR(const std::vector<bool>& _seed, const std::vector<int>& _coefs)
+    : seed(_seed)
+{
+    int size = _seed.size();
+
+    for (const auto& coef : _coefs)
+    {
+        if (coef > size || coef < 1)
+            throw "Error: incorrect coefs";
+    }
+
+    this->coefs = _coefs;
+}
+
+LSFR::~LSFR()
+{
+}
+
+bool LSFR::GetRandomNumber()
+{
+    int sum = 0;
+    int size = this->seed.size();
+
+    std::for_each(this->coefs.begin(), this->coefs.end(), [&sum, &size, this](const int& coef) { sum += this->seed[size - coef]; });
+
+    bool res = *(this->seed.end() - 1);
+
+    for (auto it = this->seed.rbegin(); it != this->seed.rend() - 1; ++it)
+    {
+        *it = *(it + 1);
+    }
+
+    this->seed[0] = sum % 2;
+
+    return res;
+}
+
+int LSFR::GetPowerAlphabet()
+{
+    return 2;
 }
