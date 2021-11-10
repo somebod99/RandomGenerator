@@ -13,17 +13,19 @@ AdditiveGenerator::AdditiveGenerator(const int& _power_alphabet, const std::vect
     }
     else
     {
+        if(_lags.size() < 2)
+            throw "Error: incorrect count lag coefs";
         if (*std::max_element(_lags.begin(), _lags.end()) != seed_size)
-            throw "Error: incorrect lag coefficients";
+            throw "Error: incorrect lag coefs";
 
         std::for_each(_lags.begin(), _lags.end(),
-            [](const int& coef) { if (coef <= 0) throw "Error: incorrect lag coefficients"; });
+            [](const int& coef) { if (coef <= 0) throw "Error: incorrect lag coefs"; });
 
         this->lags = _lags;
     }
 
     std::for_each(_seed.begin(), _seed.end(),
-        [&_power_alphabet](const int& elem) { if (elem >= _power_alphabet || elem < 0) throw "Error: incorrect input sequence"; });
+        [&_power_alphabet](const int& elem) { if (elem >= _power_alphabet || elem < 0) throw "Error: incorrect seeds element"; });
 
     this->seed = _seed;
     this->power_alphabet = _power_alphabet;
@@ -43,7 +45,7 @@ unsigned long int AdditiveGenerator::GetPeriod()
     {
         GetRandomNumber();
         ++T;
-    } while (old_seed != this->seed);
+    } while (old_seed != this->seed && T < MAX_PERIOD);
 
     this->seed = old_seed;
 

@@ -4,6 +4,8 @@
 #include <vector>
 #include <algorithm>
 
+constexpr unsigned int MAX_PERIOD = 100000;
+
 template<class T>
 class RandomGenerator
 {

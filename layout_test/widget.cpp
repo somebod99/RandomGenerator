@@ -95,6 +95,12 @@ void Widget::slotGenerate()
 
         if(ui->lagsLineEdit->text() != "")
         {
+            for(const auto& symbol : ui->lagsLineEdit->text().toStdString())
+            {
+                if(!isdigit(symbol) && symbol != ' ')
+                    throw "Error: incorrect lag coefs";
+            }
+
             QList<QString> str_list = ui->lagsLineEdit->text().split(' ');
 
             for(const auto& num : str_list)
@@ -113,9 +119,15 @@ void Widget::slotGenerate()
         ui->genSeqTextBrowser->setText(str_res);
 
         ui->pirsonLabel->setText("PIRSON = " + QString::number(HiPirson(res_seq, generator.GetPowerAlphabet())));
-        ui->tLabel->setText("T = " + QString::number(generator.GetPeriod()));
 
-        QMessageBox::information(this, "", "Sequence creating successfully");
+        unsigned int T = generator.GetPeriod();
+
+        if(T == MAX_PERIOD)
+            ui->tLabel->setText("T >= " + QString::number(T));
+        else
+            ui->tLabel->setText("T = " + QString::number(T));
+
+        QMessageBox::information(this, "", "Sequence created successfully");
     }
     catch (const char* er)
     {
