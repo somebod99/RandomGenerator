@@ -66,10 +66,17 @@ void Widget::slotGenerate()
 
             QString str_seed = file.readAll();
 
+            if(str_seed[str_seed.size() - 1] == ' ')
+                throw "Error: incorrect seed";
+
+            char pred = '\0';
+
             for(const auto& symbol : str_seed.toStdString())
             {
-                if(!isdigit(symbol) && symbol != ' ')
+                if((!isdigit(symbol) && symbol != ' ') || (symbol == ' ' && pred == ' '))
                     throw "Error: incorrect seed";
+
+                pred = symbol;
             }
 
             file.close();
@@ -81,24 +88,28 @@ void Widget::slotGenerate()
         }
         else
         {
+            if(ui->seedLineEdit->text()[ui->seedLineEdit->text().size() - 1] == ' ')
+                throw "Error: incorrect seed";
+
+            char pred = '\0';
+
             for(const auto& symbol : ui->seedLineEdit->text().toStdString())
             {
-                if(!std::isdigit(symbol) && symbol != ' ')
+                if((!isdigit(symbol) && symbol != ' ') || (symbol == ' ' && pred == ' '))
                     throw "Error: incorrect seed";
+
+                pred = symbol;
             }
 
             QList<QString> str_list = ui->seedLineEdit->text().split(' ');
 
             for(const auto& num : str_list)
-            {
-                if(num != "")
-                    seed.push_back(num.toInt());
-            }
+                seed.push_back(num.toInt());
         }
 
         for(const auto& symbol : ui->powerLineEdit->text().toStdString())
         {
-            if(!isdigit(symbol) && symbol != ' ')
+            if(!isdigit(symbol))
                 throw "Error: incorrect power of alphabet";
         }
 
@@ -107,10 +118,17 @@ void Widget::slotGenerate()
 
         if(ui->lagsLineEdit->text() != "")
         {
+            if(ui->lagsLineEdit->text()[ui->lagsLineEdit->text().size() - 1] == ' ')
+                throw "Error: incorrect lag coefs";
+
+            char pred = '\0';
+
             for(const auto& symbol : ui->lagsLineEdit->text().toStdString())
             {
-                if(!isdigit(symbol) && symbol != ' ')
+                if((!isdigit(symbol) && symbol != ' ') || (symbol == ' ' && pred == ' '))
                     throw "Error: incorrect lag coefs";
+
+                pred = symbol;
             }
 
             QList<QString> str_list = ui->lagsLineEdit->text().split(' ');
@@ -145,11 +163,6 @@ void Widget::slotGenerate()
     {
         QMessageBox::critical(nullptr, "ERROR", er);
     }
-    catch (const std::exception& er)
-    {
-        QMessageBox::critical(nullptr, "ERROR", er.what());
-    }
-
 }
 
 void Widget::slotBrows()
