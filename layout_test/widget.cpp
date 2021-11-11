@@ -17,6 +17,18 @@ Widget::Widget(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->inDataWidget->setStyleSheet("QPushButton:hover {background-color: rgb(113, 113, 113)}");
+    //ui->browsPushButton->setStyleSheet("border-style: solid; border-width: 2px; border-color: white;");
+
+    ui->resultVWidget->setStyleSheet("QPushButton:hover {background-color: rgb(113, 113, 113)}");
+    //ui->genPushButton->setStyleSheet("background-color: black; border-style: solid; border-width: 2px; border-color: white;");
+
+    ui->genSeqTextBrowser->setStyleSheet("background-color: black;"
+                                         "border-style: solid;"
+                                         "border-width: 2px;"
+                                         "border-color: white;"
+                                         );
+
     connect(ui->browsPushButton, SIGNAL(clicked()), this, SLOT(slotBrows()));
     connect(ui->genPushButton, SIGNAL(clicked()), this, SLOT(slotGenerate()));
 }
@@ -127,15 +139,15 @@ void Widget::slotGenerate()
         else
             ui->tLabel->setText("T = " + QString::number(T));
 
-        QMessageBox::information(this, "", "Sequence created successfully");
+        QMessageBox::information(nullptr, "Info", "Sequence created successfully");
     }
     catch (const char* er)
     {
-        QMessageBox::critical(this, "ERROR", er);
+        QMessageBox::critical(nullptr, "ERROR", er);
     }
     catch (const std::exception& er)
     {
-        QMessageBox::critical(this, "ERROR", er.what());
+        QMessageBox::critical(nullptr, "ERROR", er.what());
     }
 
 }
